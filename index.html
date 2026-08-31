@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Río Abajo — Tormenta Ágata, Atitlán</title>
+<title>Atitlán bajo la lluvia — Cambio climático en la cuenca del lago</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
@@ -11,68 +11,70 @@
 <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
 <style>
   :root{
-    --bg:#0e1a16; --panel:#182c22ee; --panel-2:#1f3a2bee; --line:#2f4d3a;
-    --ink:#eee6d3; --muted:#93ab99; --forest:#4c9a6a; --amber:#d8a84e; --blue:#5b9bd6; --danger:#c1443b; --good:#6fbf8b;
+    /* Tema claro "lago y cielo brillante" */
+    --bg:#eef5f2; --panel:#ffffffe8; --panel-2:#e9f3f4; --panel-3:#dceaf6; --line:#cadfe4;
+    --ink:#123a44; --muted:#5c7c85;
+    --forest:#0b756a; --amber:#bd7817; --blue:#2f7fc4; --danger:#c1443b; --good:#1a8a5a;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;height:100%;background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);overflow:hidden;}
+  html,body{margin:0;padding:0;height:100%;font-family:'Inter',sans-serif;color:var(--ink);overflow:hidden;
+    background:
+      radial-gradient(120% 70% at 80% -10%, #d7ecf5 0%, rgba(215,236,245,0) 55%),
+      linear-gradient(180deg,#e6f2f8 0%, #f4f9f7 58%, #dcecf0 100%);}
   .wrap{max-width:1000px;margin:0 auto;padding:20px 16px 50px;overflow-y:auto;height:100%;}
-  h1{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(22px,5vw,32px);margin:0 0 4px;letter-spacing:-.01em;}
+  h1{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(30px,6vw,48px);line-height:1.03;margin:0 0 10px;letter-spacing:-.02em;text-wrap:balance;}
   h1 em{font-style:italic;color:var(--forest);}
-  h2{font-family:'Fraunces',serif;font-size:19px;margin:0 0 4px;}
-  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);display:flex;gap:8px;align-items:center;margin-bottom:8px;}
-  .eyebrow::before{content:"";width:16px;height:1px;background:var(--amber);}
-  .sub{color:var(--muted);font-size:13.5px;line-height:1.55;max-width:640px;}
+  h2{font-family:'Fraunces',serif;font-size:20px;margin:0 0 4px;}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);display:flex;gap:8px;align-items:center;margin-bottom:10px;font-weight:600;}
+  .eyebrow::before{content:"";width:18px;height:2px;background:var(--amber);border-radius:2px;}
+  .sub{color:#2c545e;font-size:14.5px;line-height:1.6;max-width:64ch;}
 
-  .hist-box{margin-top:14px;background:var(--panel-2);border-left:3px solid var(--danger);border-radius:0 10px 10px 0;padding:12px 15px;font-size:12.5px;color:#e5d0cd;line-height:1.6;}
+  .hist-box{margin-top:16px;background:#ffffffde;border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:4px 12px 12px 4px;padding:14px 17px;font-size:13.5px;color:#2c545e;line-height:1.65;max-width:66ch;box-shadow:0 8px 24px rgba(18,58,68,.07);}
   .hist-box b{color:var(--ink);}
 
   /* TIMELINE */
-  .timeline-section{margin-top:22px;}
-  .timeline-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-  .timeline-track{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;}
-  .tl-step{
-    flex:0 0 168px;background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;transition:.15s;
-  }
-  .tl-step:hover{border-color:var(--blue);}
-  .tl-step.active{border-color:var(--amber);background:var(--panel-2);box-shadow:0 0 0 1px var(--amber) inset;}
-  .tl-step .date{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);text-transform:uppercase;letter-spacing:.05em;}
-  .tl-step .head{font-weight:700;font-size:12.5px;margin-top:4px;}
-  .tl-detail{margin-top:12px;background:var(--panel-2);border-radius:10px;padding:13px 15px;font-size:12.5px;line-height:1.6;color:#dce7dc;min-height:44px;}
+  .timeline-section{margin-top:26px;}
+  .timeline-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .timeline-track{display:flex;gap:9px;overflow-x:auto;padding-bottom:8px;}
+  .tl-step{flex:0 0 178px;background:var(--panel);border:1.5px solid var(--line);border-radius:13px;padding:13px;cursor:pointer;transition:.15s;box-shadow:0 4px 14px rgba(18,58,68,.05);}
+  .tl-step:hover{border-color:var(--blue);transform:translateY(-2px);}
+  .tl-step.active{border-color:var(--amber);background:#fff6e8;box-shadow:0 6px 16px rgba(189,120,23,.14),0 0 0 1px var(--amber) inset;}
+  .tl-step .date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+  .tl-step .head{font-weight:700;font-size:12.5px;margin-top:5px;line-height:1.25;}
+  .tl-detail{margin-top:14px;background:#ffffffde;border:1px solid var(--line);border-radius:12px;padding:15px 17px;font-size:13.5px;line-height:1.65;color:#2c545e;min-height:44px;box-shadow:0 6px 20px rgba(18,58,68,.06);}
+  .tl-detail b{color:var(--ink);}
   .mini-btn{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:600;cursor:pointer;}
   .mini-btn:hover{border-color:var(--forest);}
 
-  .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;}
-  .start-btn{
-    background:var(--forest); color:#0c1814; border:none; border-radius:11px;
-    padding:14px 24px; font-weight:700; font-size:14px; cursor:pointer; transition:.15s;
-  }
-  .start-btn.secondary{background:var(--panel-2); color:var(--ink); border:1.5px solid var(--danger);}
-  .start-btn:hover{filter:brightness(1.08);}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px;}
+  .start-btn{background:var(--forest);color:#fff;border:1.5px solid transparent;border-radius:12px;padding:14px 24px;font-weight:700;font-size:14px;cursor:pointer;transition:.15s;box-shadow:0 8px 20px rgba(11,117,106,.26);}
+  .start-btn.secondary{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:0 4px 12px rgba(18,58,68,.06);}
+  .start-btn:hover{filter:brightness(1.05);}
+  .start-btn:active{transform:translateY(1px);}
 
   /* MAP SCREEN */
   #map{position:absolute;inset:0;}
   #rainCanvas{position:absolute;inset:0;z-index:3;pointer-events:none;}
   #weatherOverlay{position:absolute;inset:0;z-index:2;pointer-events:none;background:rgba(10,16,12,0);transition:background 1s ease;}
   #flashOverlay{position:absolute;inset:0;z-index:2;pointer-events:none;background:rgba(255,255,255,0);}
-  .topbar{position:absolute;top:0;left:0;right:0;z-index:6;background:linear-gradient(to bottom, rgba(8,14,11,.92), rgba(8,14,11,0));padding:12px 16px 40px;pointer-events:none;display:flex;justify-content:space-between;align-items:flex-start;}
+  .topbar{position:absolute;top:0;left:0;right:0;z-index:6;background:linear-gradient(to bottom, rgba(244,249,247,.95), rgba(244,249,247,0));padding:12px 16px 40px;pointer-events:none;display:flex;justify-content:space-between;align-items:flex-start;}
   .topbar *{pointer-events:auto;}
-  .place-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;}
-  .mute-btn{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:7px 12px;font-size:12px;cursor:pointer;color:var(--ink);}
-  .side-panel{position:absolute;top:70px;right:14px;z-index:6;width:250px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;backdrop-filter:blur(6px);}
+  .place-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+  .mute-btn{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:7px 12px;font-size:12px;cursor:pointer;color:var(--ink);box-shadow:0 3px 10px rgba(18,58,68,.08);}
+  .side-panel{position:absolute;top:70px;right:14px;z-index:6;width:250px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(18,58,68,.12);}
   .risk-item{margin-bottom:10px;}
   .risk-top{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:4px;}
   .risk-val{font-weight:700;}
-  .risk-track{height:9px;background:#0e1c15;border-radius:5px;overflow:hidden;}
+  .risk-track{height:9px;background:#d7e6ea;border-radius:5px;overflow:hidden;}
   .risk-fill{height:100%;border-radius:5px;transition:width .6s ease, background .6s ease;}
-  .narrative-box{font-size:12px;line-height:1.55;color:#dce7dc;margin-top:10px;border-top:1px solid var(--line);padding-top:10px;}
+  .narrative-box{font-size:12px;line-height:1.55;color:#2c545e;margin-top:10px;border-top:1px solid var(--line);padding-top:10px;}
   .impact-row{display:flex;gap:8px;margin-top:10px;border-top:1px solid var(--line);padding-top:10px;}
   .impact-item{flex:1;background:var(--panel-2);border-radius:9px;padding:8px;text-align:center;}
   .impact-item .n{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:var(--amber);}
   .impact-item .l{font-size:9.5px;color:var(--muted);margin-top:2px;}
   .impact-note{font-size:9.5px;color:var(--muted);margin-top:6px;line-height:1.4;}
 
-  .bottom-panel{position:absolute;bottom:16px;left:16px;z-index:6;width:300px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;backdrop-filter:blur(6px);}
+  .bottom-panel{position:absolute;bottom:16px;left:16px;z-index:6;width:300px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;backdrop-filter:blur(6px);box-shadow:0 12px 30px rgba(18,58,68,.12);}
   .lbl{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;}
   .panel-head{display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:8px;}
   .panel-head .lbl{margin-bottom:0;}
@@ -81,14 +83,14 @@
   .rain-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
   .rain-btn{background:var(--panel-2);border:1.5px solid var(--line);border-radius:9px;padding:9px 6px;text-align:center;cursor:pointer;font-size:12px;font-weight:700;transition:.15s;}
   .rain-btn:hover{border-color:var(--blue);}
-  .rain-btn.active{border-color:var(--blue);background:#233a4a;box-shadow:0 0 0 1px var(--blue) inset;}
+  .rain-btn.active{border-color:var(--blue);background:#d6e8f6;box-shadow:0 0 0 1px var(--blue) inset;}
   .rain-btn .mm{display:block;font-size:14px;}
   .rain-btn .tag{display:block;font-size:9.5px;font-weight:500;color:var(--muted);margin-top:1px;}
   .place-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .place-btn{background:var(--panel-2);border:1.5px solid var(--line);border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;font-weight:700;font-size:12.5px;}
-  .place-btn.active{border-color:var(--forest);background:#274733;}
-  .back-btn{position:fixed;top:10px;right:10px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:6px 12px;cursor:pointer;z-index:9;}
-  .attrib{position:absolute;bottom:6px;right:10px;z-index:4;font-size:9px;color:#7d9285;font-family:'JetBrains Mono',monospace;background:rgba(10,18,14,.6);padding:2px 7px;border-radius:5px;}
+  .place-btn.active{border-color:var(--forest);background:#d7f0e8;}
+  .back-btn{position:fixed;top:10px;right:10px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:6px 12px;cursor:pointer;z-index:9;box-shadow:0 3px 10px rgba(18,58,68,.08);}
+  .attrib{position:absolute;bottom:6px;right:10px;z-index:4;font-size:9px;color:#4c6b74;font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.72);padding:2px 7px;border-radius:5px;}
   .maplibregl-ctrl-attrib{display:none;}
 
   /* RESPONSIVE — teléfono */
@@ -99,32 +101,20 @@
     .mission-clock{font-size:19px;}
     .mute-btn{padding:6px 9px;font-size:11px;}
     .back-btn{top:auto !important;bottom:10px !important;left:10px !important;right:auto !important;font-size:10px;padding:6px 10px;z-index:9;}
-
-    .side-panel{
-      top:64px; right:8px; left:8px; width:auto;
-      max-height:30vh; overflow-y:auto; padding:10px 12px;
-    }
+    .side-panel{top:64px; right:8px; left:8px; width:auto; max-height:30vh; overflow-y:auto; padding:10px 12px;}
     .side-panel .lbl{margin-bottom:6px;}
     .risk-item{margin-bottom:6px;}
     .impact-row{margin-top:6px;padding-top:6px;}
     .impact-item .n{font-size:15px;}
     .narrative-box{font-size:11px;margin-top:6px;padding-top:6px;}
-
-    .bottom-panel{
-      position:absolute; top:auto; bottom:0; left:0; right:0; width:auto;
-      border-radius:16px 16px 0 0; max-height:38vh; overflow-y:auto;
-      padding:12px 12px 16px;
-    }
+    .bottom-panel{position:absolute; top:auto; bottom:0; left:0; right:0; width:auto; border-radius:16px 16px 0 0; max-height:38vh; overflow-y:auto; padding:12px 12px 16px;}
     .rain-btn{padding:8px 4px;font-size:11px;}
     .rain-btn .mm{font-size:12.5px;}
     .place-btn{padding:9px 6px;font-size:11.5px;}
-
     .attrib{display:none;}
-
     .evac-panel{bottom:calc(env(safe-area-inset-bottom,0px) + 14px);}
     .evac-btn{padding:16px 28px;font-size:14.5px;}
     .mission-hint{font-size:10.5px;padding:0 20px;}
-
     .modal-box{padding:16px;max-height:88vh;}
     .modal-head h2{font-size:16px;}
     .cta-row{gap:8px;}
@@ -137,33 +127,29 @@
   }
 
   /* MISSION */
-  .mission-topbar{position:absolute;top:0;left:0;right:0;z-index:6;background:linear-gradient(to bottom, rgba(8,14,11,.92), rgba(8,14,11,0));padding:12px 16px 40px;pointer-events:none;display:flex;justify-content:space-between;}
+  .mission-topbar{position:absolute;top:0;left:0;right:0;z-index:6;background:linear-gradient(to bottom, rgba(244,249,247,.95), rgba(244,249,247,0));padding:12px 16px 40px;pointer-events:none;display:flex;justify-content:space-between;}
   .mission-topbar *{pointer-events:auto;}
-  .mission-clock{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:var(--amber);}
+  .mission-clock{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:var(--danger);}
   .evac-panel{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:7;text-align:center;}
-  .evac-btn{
-    background:var(--danger); color:#fff; border:none; border-radius:50px; padding:20px 40px;
-    font-weight:800; font-size:17px; cursor:pointer; box-shadow:0 6px 24px rgba(193,68,59,.5); transition:.15s; letter-spacing:.02em;
-  }
+  .evac-btn{background:var(--danger);color:#fff;border:none;border-radius:50px;padding:20px 40px;font-weight:800;font-size:17px;cursor:pointer;box-shadow:0 6px 24px rgba(193,68,59,.4);transition:.15s;letter-spacing:.02em;}
   .evac-btn:hover{transform:scale(1.04);}
-  .evac-btn:disabled{background:#4a3a38;box-shadow:none;cursor:not-allowed;}
+  .evac-btn:disabled{background:#cdd6d8;color:#7c8a8e;box-shadow:none;cursor:not-allowed;}
   .mission-hint{margin-top:10px;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
-  .result-overlay{
-    position:absolute;inset:0;z-index:20;background:rgba(8,14,11,.92);display:flex;align-items:center;justify-content:center;padding:24px;
-  }
-  .result-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px;max-width:440px;width:100%;text-align:center;}
+  .result-overlay{position:absolute;inset:0;z-index:20;background:rgba(238,245,242,.94);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px;}
+  .result-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(18,58,68,.18);}
   .result-badge{display:inline-block;padding:6px 16px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;font-weight:700;}
   .result-num{font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:800;margin:10px 0 4px;}
   .result-sub{font-size:12.5px;color:var(--muted);margin-bottom:16px;}
-  .result-text{font-size:13.5px;line-height:1.6;color:#dce7dc;text-align:left;background:var(--panel-2);border-radius:10px;padding:14px;margin-bottom:18px;}
+  .result-text{font-size:13.5px;line-height:1.6;color:#2c545e;text-align:left;background:var(--panel-2);border-radius:10px;padding:14px;margin-bottom:18px;}
+  .result-text b{color:var(--ink);}
   /* MODALES: fuentes / leyenda / quiz */
-  .modal-overlay{position:fixed;inset:0;background:rgba(6,10,8,.78);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:40;}
-  .modal-box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;max-width:520px;width:100%;max-height:82vh;overflow-y:auto;}
+  .modal-overlay{position:fixed;inset:0;background:rgba(18,40,48,.5);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:40;}
+  .modal-box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;max-width:520px;width:100%;max-height:82vh;overflow-y:auto;box-shadow:0 24px 60px rgba(18,58,68,.28);}
   .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
   .modal-head h2{font-family:'Fraunces',serif;font-size:19px;margin:0;}
-  .source-list{margin:0;padding-left:18px;font-size:12.5px;line-height:1.6;color:#dce7dc;}
+  .source-list{margin:0;padding-left:18px;font-size:12.5px;line-height:1.6;color:#2c545e;}
   .source-list li{margin-bottom:9px;}
-  .legend-row{display:flex;align-items:center;gap:10px;font-size:13px;color:#dce7dc;padding:7px 0;border-bottom:1px solid var(--line);}
+  .legend-row{display:flex;align-items:center;gap:10px;font-size:13px;color:#2c545e;padding:7px 0;border-bottom:1px solid var(--line);}
   .legend-swatch{width:22px;height:14px;border-radius:3px;flex:none;}
   .legend-dot{width:12px;height:12px;border-radius:50%;flex:none;}
   .quiz-q{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line);}
@@ -173,8 +159,8 @@
   .quiz-opt:hover{border-color:var(--forest);}
   .quiz-opt.chosen{border-color:var(--blue);background:var(--panel-3);}
   .quiz-fb{margin-top:8px;font-size:12px;line-height:1.5;padding:8px 10px;border-radius:8px;}
-  .quiz-fb.ok{background:#1d3a2a;color:var(--good);}
-  .quiz-fb.bad{background:#3a2320;color:#f0a89f;}
+  .quiz-fb.ok{background:#dff3e8;color:#116b45;}
+  .quiz-fb.bad{background:#fbe4e1;color:#b3352c;}
 </style>
 </head>
 <body>
@@ -715,15 +701,15 @@ function renderHome(){
   document.body.style.overflow = 'auto';
   document.getElementById('app').className = 'wrap';
   document.getElementById('app').innerHTML = `
-    <div class="eyebrow">Laboratorio de cuenca · lago Atitlán</div>
-    <h1>Río Abajo — <em>Tormenta Ágata</em></h1>
-    <p class="sub">Panajachel y San Marcos La Laguna, sobre el lago Atitlán, en el terreno real visto por satélite. Controlá la lluvia y mirá crecer el río, como pasó con la tormenta Ágata en 2010.</p>
-    <div class="hist-box">🌪️ <b>Tormenta Ágata, 28–30 de mayo de 2010:</b> casi 72 horas de lluvia continua golpearon once departamentos de Guatemala, entre ellos Sololá. En la estación más cercana a Panajachel se midieron 215.8mm — el máximo histórico de la serie 1995-2011. Panajachel está construido sobre el abanico aluvial del río San Francisco, una zona formada por crecidas anteriores del propio río. Un estudio hidrológico real (2012) advierte que el peligro mayor no es solo la inundación: es la velocidad erosiva del agua, capaz de socavar y destruir edificaciones — y que eventos como Ágata no son estadísticamente "extraordinarios": Mitch (1998), Stan (2005) y las depresiones E-11 (2010) y 12-E (2012) golpearon el mismo río en poco más de una década.</div>
+    <div class="eyebrow">Cambio climático · Cuenca del lago de Atitlán</div>
+    <h1>Atitlán bajo la <em>lluvia</em></h1>
+    <p class="sub">Explora el cambio climático y los riesgos en la cuenca del lago de Atitlán. En una región tan lluviosa como esta, un clima más cálido trae lluvias más intensas y frecuentes: aquí, sobre el terreno real visto por satélite, controlás la lluvia y ves crecer los ríos como ha pasado tantas veces en la cuenca.</p>
+    <div class="hist-box">🌧️ <b>Una cuenca cada vez más lluviosa.</b> La ciencia del clima advierte que, en regiones ya de por sí lluviosas como el altiplano de Guatemala, el calentamiento global vuelve las lluvias extremas más intensas y más frecuentes. La cuenca de Atitlán lo ha vivido de cerca: el huracán Mitch (1998), la tormenta Stan (2005), la tormenta Ágata (2010) y las depresiones tropicales E-11 (2010) y 12-E (2012) golpearon los mismos ríos (el San Francisco en Panajachel y el San Marcos) en poco más de una década. Panajachel está construido sobre el abanico aluvial del río San Francisco, formado por crecidas anteriores del propio río. Un estudio hidrológico real (2012) advierte que el peligro mayor no es solo la inundación, sino la velocidad erosiva del agua, capaz de socavar y destruir edificaciones. A esto se suma la amenaza de lahares del Complejo Volcánico Atitlán-Tolimán.</div>
     <div class="impact-note" style="margin-top:8px;">📖 Fuente de los datos hidrológicos: <i>Estudio hidrológico-hidráulico de avenida en el río San Francisco (Panajachel)</i> — Geólogos del Mundo, Asociación Vivamos Mejor y SE-CONRED, con apoyo de la AECID (Guatemala, 2012).</div>
 
     <div class="timeline-section">
       <div class="timeline-head">
-        <div class="lbl" style="margin:0;">📅 Línea de tiempo real</div>
+        <div class="lbl" style="margin:0;">📅 De cerca: la tormenta Ágata (2010)</div>
         <div class="mini-btn" id="tlPlayBtn" onclick="toggleTimelinePlay()">▶ Reproducir</div>
       </div>
       <div class="timeline-track" id="timelineTrack"></div>
